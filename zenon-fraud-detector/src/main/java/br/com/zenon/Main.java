@@ -3,10 +3,9 @@ package br.com.zenon;
 import br.com.zenon.fraud.FraudAnalyzer;
 import br.com.zenon.transactions.Transaction;
 import br.com.zenon.transactions.TransactionIngestor;
+import br.com.zenon.transactions.TransactionType;
 
-import java.math.BigDecimal;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public class Main {
 
@@ -18,45 +17,32 @@ public class Main {
         TransactionIngestor transactionIngestor = new TransactionIngestor();
         var transactions = transactionIngestor.read(FILE);
 
-        //Listando as fraudes apenas
-        var fraudAnalyzers = transactions
-                .stream()
-                .filter(Transaction::isFraud)
-                .map(FraudAnalyzer::toFraudAnalyzer)
-                .toList();
+        var fraudAnalyzer = new FraudAnalyzer(transactions);
 
         //a) Apenas transações onde isFraud == true, imprima o tamanho da lista.
-        IO.println("Total de Fraudes: " + fraudAnalyzers.size());
+        long fraudCount = fraudAnalyzer.countFrauds();
+        IO.println("Total de Fraudes: " + fraudCount);
 
         //b) Imprima as 3 fraudes de maior valor (amount).
+        var highestValueFrauds = fraudAnalyzer.findHighestValueFraudsAmounts(3);
         IO.println("Top 3 Fraudes de Maior Valor:");
-        fraudAnalyzers.stream()
-                .sorted((f1, f2) -> f2.amount().compareTo(f1.amount()))
-                .limit(3)
-                .forEach(System.out::println);
-
+        highestValueFrauds.forEach(IO::println);
 
         //c) Obter apenas os nomes dos clientes de origem (nameOrig) dessas fraudes e depois gere uma lista sem repetições (Set ou distinct) com os 5 maiores clientes suspeitos.
-        Set<String> collect = fraudAnalyzers.stream()
-                .sorted((f1, f2) -> f2.amount().compareTo(f1.amount()))
-                .distinct()
-                .limit(5)
-                .map(FraudAnalyzer::nameOrigin)
-                .collect(Collectors.toSet());
-        IO.println("Clientes Suspeitos:");
-        collect.forEach(System.out::println);
-        
+        var suspiciousClient = fraudAnalyzer.findTopSuspiciousClient(5);
+        IO.println("Top 5 Clientes Suspeitos:");
+        suspiciousClient.forEach(IO::println);
+
         //d Calcule o prejuízo total causado pelas fraudes (soma dos amount).
-        var prejuizoTotal = fraudAnalyzers.stream()
-                .map(FraudAnalyzer::amount)
-                .sorted(BigDecimal::compareTo)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        IO.println("Prejuízo Total: " + prejuizoTotal);
-        
+        var totalFraudLoss = fraudAnalyzer.calculateTotalFraudLoss();
+        IO.println("Prejuízo Total: " + totalFraudLoss);
+
         //e) Conte quantas fraudes ocorreram por tipo de transação (CASH_OUT, TRANSFER, etc...).
-        fraudAnalyzers.stream()
-                .collect(Collectors.groupingBy(FraudAnalyzer::type, Collectors.counting()))
-                .forEach((tipo, quantidade) -> System.out.println("- " + tipo + ": " + quantidade));
-        
+        Map<TransactionType, Long> fraudCountByType = fraudAnalyzer.countFraudsByType();
+        IO.println("Fraudes por tipo:");
+        fraudCountByType.forEach((type, count) -> {
+            IO.println("- %s: %d".formatted(type, count));
+        });
+
     }
 }
