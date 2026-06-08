@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class TransactionIngestor {
@@ -21,6 +22,8 @@ public class TransactionIngestor {
                     .skip(1)
                     .limit(1000)
                     .map(Transaction::parseRow)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
                     .toList();
         } catch (IOException e) {
             throw new RuntimeException("Error reading file: " + e.getMessage());
@@ -42,7 +45,8 @@ public class TransactionIngestor {
                 if (rowsCount >= 1000) {
                     break;
                 }
-                transactions.add(Transaction.parseRow(row));
+
+                Transaction.parseRow(row).ifPresent(transactions::add);
             }
         } catch (IOException e) {
             throw new RuntimeException("Error reading file: " + e.getMessage());
