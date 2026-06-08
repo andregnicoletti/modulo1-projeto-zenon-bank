@@ -11,15 +11,31 @@ public record Transaction(int step,
                           boolean isFlaggedFraud) {
 
     public static Transaction parseRow(final String row) {
-        String[] split = row.split(",");
+        String[] chunk = row.split(",");
+
+        int step = Integer.parseInt(chunk[0]);
+        TransactionType type = TransactionType.valueOf(chunk[1]);
+        BigDecimal amount = new BigDecimal(chunk[2]);
+
+        String originCustomerName = chunk[3];
+        BigDecimal originOldBalance = new BigDecimal(chunk[4]);
+        BigDecimal originNewBalance = new BigDecimal(chunk[5]);
+
+        String recipientCustomerName = chunk[6];
+        BigDecimal recipientOldBalance = new BigDecimal(chunk[7]);
+        BigDecimal recipientNewBalance = new BigDecimal(chunk[8]);
+
+        boolean isFraud = Boolean.parseBoolean(chunk[9]);
+        boolean isFlaggedFraud = Boolean.parseBoolean(chunk[10]);
+
         return new Transaction(
-                Integer.parseInt(split[0]),
-                TransactionType.valueOf(split[1].toUpperCase()),
-                new BigDecimal(split[2]),
-                new TransactionCustomer(split[3],new BigDecimal(split[4]),new BigDecimal(split[5])),
-                new TransactionCustomer(split[6],new BigDecimal(split[7]),new BigDecimal(split[8])),
-                Boolean.parseBoolean(split[9]),
-                Boolean.parseBoolean(split[10]));
+                step,
+                type,
+                amount,
+                new TransactionCustomer(originCustomerName, originOldBalance, originNewBalance),
+                new TransactionCustomer(recipientCustomerName, recipientOldBalance, recipientNewBalance),
+                isFraud,
+                isFlaggedFraud);
     }
 
 }

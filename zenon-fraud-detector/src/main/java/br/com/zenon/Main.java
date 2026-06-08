@@ -6,14 +6,12 @@ import br.com.zenon.paysim.TransactionIngestor;
 import java.util.List;
 
 public class Main {
-  
+
+    public static final String FILE = "data/ps_log.csv";
+
     void main() throws Exception {
         System.out.printf("Hello and welcome to Zenon Fraud Detector!%n");
-
         TransactionIngestor transactionIngestor = new TransactionIngestor();
-        List<Transaction> transactions = transactionIngestor.ingestFile("data/archive/PS_20174392719_1491204439457_log.csv");
-        transactions.forEach(System.out::println);
-
-        
+        transactionIngestor.read(FILE).stream().limit(10).forEach(IO::println);
     }
 }

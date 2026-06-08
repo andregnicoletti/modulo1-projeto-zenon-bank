@@ -1,35 +1,54 @@
 package br.com.zenon.paysim;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class TransactionIngestor {
 
-    public List<Transaction> ingestFile(final String fileName) throws Exception {
+    private List<Transaction> transactions = new ArrayList<>();
 
-        Path path = Paths.get(fileName);
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(path.toFile()));
+    public List<Transaction> read(final String fileName) {
 
-        List<Transaction> transactions = new ArrayList<>();
-
-        int rows = 0;
-        bufferedReader.readLine();
-        while (rows < 1000) {
-            String line = bufferedReader.readLine();
-            if (line == null) {
-                break;
-            }
-
-            transactions.add(Transaction.parseRow(line));
-            rows++;
+        Path path = Path.of(fileName);
+        try {
+            List<String> lines = Files.readAllLines(path);
+            return lines.stream()
+                    .skip(1)
+                    .limit(1000)
+                    .map(Transaction::parseRow)
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading file: " + e.getMessage());
         }
+    }
 
-        System.out.println("Finished ingesting file. Total transactions ingested: " + transactions.size());
+    public List<Transaction> readOldSchool(final String fileName) {
+        try (FileInputStream fileInputStream = new FileInputStream(fileName)) {
+            Scanner scanner = new Scanner(fileInputStream);
+            int rowsCount = 0;
+            while (scanner.hasNextLine()) {
+                String row = scanner.nextLine();
+                rowsCount++;
 
+                if (rowsCount == 1) {
+                    continue;
+                }
+
+                if (rowsCount >= 1000) {
+                    break;
+                }
+                transactions.add(Transaction.parseRow(row));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error reading file: " + e.getMessage());
+        }
         return transactions;
     }
+
 
 }
