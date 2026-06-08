@@ -1,4 +1,4 @@
-package br.com.zenon.paysim;
+package br.com.zenon.transactions;
 
 import java.math.BigDecimal;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package br.com.zenon.paysim;
+package br.com.zenon.transactions;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class TransactionIngestor {
             List<String> lines = Files.readAllLines(path);
             return lines.stream()
                     .skip(1)
-                    .limit(1000)
+                    .limit(50000)
                     .map(Transaction::parseRow)
                     .filter(Optional::isPresent)
                     .map(Optional::get)

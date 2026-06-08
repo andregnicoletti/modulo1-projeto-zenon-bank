@@ -1,4 +1,4 @@
-package br.com.zenon.paysim;
+package br.com.zenon.transactions;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -43,8 +43,8 @@ public record Transaction(int step,
             var recipientOldBalance = new BigDecimal(chunk[7]);
             var recipientNewBalance = new BigDecimal(chunk[8]);
 
-            var isFraud = Boolean.parseBoolean(chunk[9]);
-            var isFlaggedFraud = Boolean.parseBoolean(chunk[10]);
+            var isFraud = "1".equals(chunk[9]);
+            var isFlaggedFraud = "1".equals(chunk[10]);
 
             var transactional = new Transaction(
                     step,
