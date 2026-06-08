@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Main {
   
-    static void main() throws Exception {
+    void main() throws Exception {
         System.out.printf("Hello and welcome to Zenon Fraud Detector!%n");
 
         TransactionIngestor transactionIngestor = new TransactionIngestor();
