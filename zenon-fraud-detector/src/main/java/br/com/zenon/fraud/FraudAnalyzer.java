@@ -22,7 +22,6 @@ public class FraudAnalyzer {
                 .count();
     }
 
-
     public List<BigDecimal> findHighestValueFraudsAmounts(final int limit) {
         return transactions.stream()
                 .filter(Transaction::isFraud)

@@ -1,8 +1,9 @@
 package br.com.zenon;
 
 import br.com.zenon.fraud.FraudAnalyzer;
-import br.com.zenon.transactions.Transaction;
 import br.com.zenon.transactions.TransactionIngestor;
+import br.com.zenon.transactions.TransactionListRepositoryImpl;
+import br.com.zenon.transactions.TransactionMapRepositoryImpl;
 import br.com.zenon.transactions.TransactionType;
 
 import java.util.Map;
@@ -44,5 +45,22 @@ public class Main {
             IO.println("- %s: %d".formatted(type, count));
         });
 
+        //--------------------------------------------------------------
+        IO.println("##################################################");
+        var clientName = "C1868032458";
+        long init = System.currentTimeMillis();
+        var transactionListRepository = new TransactionListRepositoryImpl(transactions);
+        transactionListRepository.findTransactionByOriginCustomerName(clientName)
+                .ifPresentOrElse(transaction -> IO.println("Transação encontrada: " + transaction),
+                        () -> IO.println("Transação não encontrada para o cliente especificado: " + clientName));
+        IO.println("Tempo gasto: %d ms".formatted(System.currentTimeMillis() - init));
+
+        long init2 = System.currentTimeMillis();
+        var transactionMapRepository = new TransactionMapRepositoryImpl(transactions);
+        transactionMapRepository.findTransactionByOriginCustomerName(clientName)
+                .ifPresentOrElse(transaction -> IO.println("Transação encontrada: " + transaction),
+                        () -> IO.println("Transação não encontrada para o cliente especificado: " + clientName));
+        IO.println("Tempo gasto: %d ms".formatted(System.currentTimeMillis() - init2));
+        
     }
 }

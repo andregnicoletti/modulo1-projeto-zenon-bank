@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class TransactionIngestor {
 
-    public static final int FRAULD_LIMIT = 50_000;
+    public static final int FRAUD_LIMIT = 100_000;
     
     private List<Transaction> transactions = new ArrayList<>();
 
@@ -22,7 +22,7 @@ public class TransactionIngestor {
             List<String> lines = Files.readAllLines(path);
             return lines.stream()
                     .skip(1)
-                    .limit(FRAULD_LIMIT)
+                    .limit(FRAUD_LIMIT)
                     .map(Transaction::parseRow)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
