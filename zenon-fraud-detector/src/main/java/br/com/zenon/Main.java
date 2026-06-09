@@ -47,17 +47,18 @@ public class Main {
 
         //--------------------------------------------------------------
         IO.println("##################################################");
-        var clientName = "C1868032458";
-        long init = System.currentTimeMillis();
+//        var clientName = "C1868032458";
+        var clientName = "C1280323807"; //tail
         var transactionListRepository = new TransactionListRepositoryImpl(transactions);
-        transactionListRepository.findTransactionByOriginCustomerName(clientName)
+        long init = System.currentTimeMillis();
+        transactionListRepository.findByOriginCustomerName(clientName)
                 .ifPresentOrElse(transaction -> IO.println("Transação encontrada: " + transaction),
                         () -> IO.println("Transação não encontrada para o cliente especificado: " + clientName));
         IO.println("Tempo gasto: %d ms".formatted(System.currentTimeMillis() - init));
 
-        long init2 = System.currentTimeMillis();
         var transactionMapRepository = new TransactionMapRepositoryImpl(transactions);
-        transactionMapRepository.findTransactionByOriginCustomerName(clientName)
+        long init2 = System.currentTimeMillis();
+        transactionMapRepository.findByOriginCustomerName(clientName)
                 .ifPresentOrElse(transaction -> IO.println("Transação encontrada: " + transaction),
                         () -> IO.println("Transação não encontrada para o cliente especificado: " + clientName));
         IO.println("Tempo gasto: %d ms".formatted(System.currentTimeMillis() - init2));

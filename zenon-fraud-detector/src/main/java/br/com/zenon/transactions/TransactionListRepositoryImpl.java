@@ -14,7 +14,7 @@ public class TransactionListRepositoryImpl implements TransactionRepository {
     }
 
     @Override
-    public Optional<Transaction> findTransactionByOriginCustomerName(String clientName) {
+    public Optional<Transaction> findByOriginCustomerName(String clientName) {
         return transactions.stream()
                 .filter(transaction -> transaction.originCustomer().name().equalsIgnoreCase(clientName))
                 .findFirst();
