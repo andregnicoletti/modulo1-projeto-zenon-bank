@@ -13,7 +13,7 @@ public class Main {
     public static final String FILE = "data/ps_log.csv";
     public static final String FILE_ERROR = "data/error.csv";
 
-    void main() throws Exception {
+    void main() {
         System.out.printf("Hello and welcome to Zenon Fraud Detector!%n");
         TransactionIngestor transactionIngestor = new TransactionIngestor();
         var transactions = transactionIngestor.read(FILE);
@@ -47,8 +47,7 @@ public class Main {
 
         //--------------------------------------------------------------
         IO.println("##################################################");
-//        var clientName = "C1868032458";
-        var clientName = "C1280323807"; //tail
+        var clientName = "C1868032458";
         var transactionListRepository = new TransactionListRepositoryImpl(transactions);
         long init = System.currentTimeMillis();
         transactionListRepository.findByOriginCustomerName(clientName)
@@ -62,6 +61,6 @@ public class Main {
                 .ifPresentOrElse(transaction -> IO.println("Transação encontrada: " + transaction),
                         () -> IO.println("Transação não encontrada para o cliente especificado: " + clientName));
         IO.println("Tempo gasto: %d ms".formatted(System.currentTimeMillis() - init2));
-        
+
     }
 }

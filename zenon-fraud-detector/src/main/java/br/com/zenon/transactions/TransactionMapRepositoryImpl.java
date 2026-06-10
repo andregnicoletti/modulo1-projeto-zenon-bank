@@ -14,7 +14,11 @@ public class TransactionMapRepositoryImpl implements TransactionRepository {
     public TransactionMapRepositoryImpl(final List<Transaction> transactions) {
         Objects.requireNonNull(transactions);
         this.transactions = transactions.stream()
-                .collect(Collectors.toMap(transaction -> transaction.originCustomer().name(), Function.identity()));
+                .collect(Collectors.toConcurrentMap(
+                        transaction -> transaction.originCustomer().name(),
+                        Function.identity(),
+                        (existente, novo) -> existente // mantém o primeiro (ou troque para "novo")
+                ));
     }
 
     @Override
