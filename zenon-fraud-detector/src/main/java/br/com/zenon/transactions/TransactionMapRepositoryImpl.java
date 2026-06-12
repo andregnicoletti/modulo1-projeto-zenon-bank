@@ -26,5 +26,10 @@ public class TransactionMapRepositoryImpl implements TransactionRepository {
         return Optional.ofNullable(transactions.get(clientName));
     }
 
+    @Override
+    public void save(Transaction transaction) {
+        transactions.put(transaction.originCustomer().name(), transaction);
+    }
+
 
 }

@@ -12,17 +12,20 @@ import java.util.Scanner;
 public class TransactionIngestor {
 
     public static final int FRAUD_LIMIT = 100_000;
-    
+
     private List<Transaction> transactions = new ArrayList<>();
 
     public List<Transaction> read(final String fileName) {
+        return read(fileName, FRAUD_LIMIT);
+    }
 
+    public List<Transaction> read(final String fileName, final int readLimiter) {
         Path path = Path.of(fileName);
         try {
             List<String> lines = Files.readAllLines(path);
             return lines.stream()
                     .skip(1)
-                    .limit(FRAUD_LIMIT)
+                    .limit(readLimiter)
                     .map(Transaction::parseRow)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
